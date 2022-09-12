@@ -1,5 +1,5 @@
-# Sabino -|Labs - Arduino Control DC-Motors
-**Control of 4 DC motors By Bluetooth**
+# Sabino -|Labs - Controlled Arduino 4WD Robot Car
+**Control Robot Car By Bluetooth**
 
 ![Breadboard](/docs/iot-control-dc-motors.png)
 
