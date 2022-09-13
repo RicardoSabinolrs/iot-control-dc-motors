@@ -3,12 +3,10 @@
 #define FRONT_LEFT_ENGINE_IN3 48
 #define FRONT_LEFT_ENGINE_IN4 46
 
-
 #define RIGHT_REAR_ENGINE_IN1 31
 #define RIGHT_REAR_ENGINE_IN2 33
 #define LEFT_REAR_ENGINE_IN3 35
 #define LEFT_REAR_ENGINE_IN4 37
-
 
 // Orientation
 #define FORWARD "f"
@@ -17,29 +15,33 @@
 #define RIGHT "r"
 #define STOP "s"
 
-
-//Sets the output pins
-void setPinModeOut(int engine) {
+// Sets the output pins
+void setPinModeOut(int engine)
+{
     pinMode(engine, OUTPUT);
 }
 
-//Active at high logic level, the pins responsible for DC motor rotation
-void active5V(int engine) {
+// Active at high logic level, the pins responsible for DC motor rotation
+void active5V(int engine)
+{
     digitalWrite(engine, HIGH);
 }
 
-//Active at low logic level, the pins responsible for the rotation of the DC motor
-void activeGND(int engine) {
+// Active at low logic level, the pins responsible for the rotation of the DC motor
+void activeGND(int engine)
+{
     digitalWrite(engine, LOW);
 }
 
-//Sets the delay time between received commands
-void runtime(int timeDelay) {
+// Sets the delay time between received commands
+void runtime(int timeDelay)
+{
     delay(timeDelay);
     stopTheRobot();
 }
 
-void setup() {
+void setup()
+{
     Serial.begin(9600);
 
     setPinModeOut(RIGHT_FRONT_ENGINE_IN1);
@@ -53,101 +55,113 @@ void setup() {
     setPinModeOut(LEFT_REAR_ENGINE_IN4);
 }
 
-//Engine movement clockwise
-void engineMovementClockwise(int pinIn1, int pinIn2) {
+// Engine movement clockwise
+void engineMovementClockwise(int pinIn1, int pinIn2)
+{
     active5V(pinIn1);
     activeGND(pinIn2);
 }
 
-//Engine movement counterclockwise
-void engineMovementCounterclockwise(int pinIn1, int pinIn2) {
+// Engine movement counterclockwise
+void engineMovementCounterclockwise(int pinIn1, int pinIn2)
+{
     activeGND(pinIn1);
     active5V(pinIn2);
 }
 
-//Dead-spot
-void deadSpot(int pinIn1, int pinIn2) {
+// Dead-spot
+void deadSpot(int pinIn1, int pinIn2)
+{
     activeGND(pinIn1);
     activeGND(pinIn2);
 }
 
-//Braked engine
-void braked(int pinIn1, int pinIn2) {
+// Braked engine
+void braked(int pinIn1, int pinIn2)
+{
     active5V(pinIn1);
     active5V(pinIn2);
 }
 
-//Move the robot forward
-void moveTheRobotForward() {
+// Move the robot forward
+void moveTheRobotForward()
+{
     engineMovementClockwise(RIGHT_FRONT_ENGINE_IN1, RIGHT_FRONT_ENGINE_IN2);
     engineMovementCounterclockwise(FRONT_LEFT_ENGINE_IN3, FRONT_LEFT_ENGINE_IN4);
     engineMovementClockwise(LEFT_REAR_ENGINE_IN3, LEFT_REAR_ENGINE_IN4);
     engineMovementCounterclockwise(RIGHT_REAR_ENGINE_IN1, RIGHT_REAR_ENGINE_IN2);
 }
 
-//Move the robot back
-void moveTheRobotBack() {
+// Move the robot back
+void moveTheRobotBack()
+{
     engineMovementCounterclockwise(RIGHT_FRONT_ENGINE_IN1, RIGHT_FRONT_ENGINE_IN2);
     engineMovementClockwise(FRONT_LEFT_ENGINE_IN3, FRONT_LEFT_ENGINE_IN4);
     engineMovementCounterclockwise(LEFT_REAR_ENGINE_IN3, LEFT_REAR_ENGINE_IN4);
     engineMovementClockwise(RIGHT_REAR_ENGINE_IN1, RIGHT_REAR_ENGINE_IN2);
 }
 
-//Stop the robot
-void stopTheRobot() {
+// Stop the robot
+void stopTheRobot()
+{
     braked(RIGHT_FRONT_ENGINE_IN1, RIGHT_FRONT_ENGINE_IN2);
     braked(FRONT_LEFT_ENGINE_IN3, FRONT_LEFT_ENGINE_IN4);
     braked(RIGHT_REAR_ENGINE_IN1, RIGHT_REAR_ENGINE_IN2);
     braked(LEFT_REAR_ENGINE_IN3, LEFT_REAR_ENGINE_IN4);
 }
 
-//Rotate the robot right
+// Rotate the robot right
 void rotateTheRobotRight()
 {
-  engineMovementCounterclockwise(FRONT_LEFT_ENGINE_IN3, FRONT_LEFT_ENGINE_IN4);
-  engineMovementCounterclockwise(RIGHT_REAR_ENGINE_IN1, RIGHT_REAR_ENGINE_IN2);
-  braked(RIGHT_FRONT_ENGINE_IN1, RIGHT_FRONT_ENGINE_IN2);
-  braked(LEFT_REAR_ENGINE_IN3, LEFT_REAR_ENGINE_IN4);
+    engineMovementCounterclockwise(FRONT_LEFT_ENGINE_IN3, FRONT_LEFT_ENGINE_IN4);
+    engineMovementCounterclockwise(RIGHT_REAR_ENGINE_IN1, RIGHT_REAR_ENGINE_IN2);
+    braked(RIGHT_FRONT_ENGINE_IN1, RIGHT_FRONT_ENGINE_IN2);
+    braked(LEFT_REAR_ENGINE_IN3, LEFT_REAR_ENGINE_IN4);
 }
 
 // Rotate the robot left
 void rotateTheRobotLeft()
 {
-  engineMovementClockwise(RIGHT_FRONT_ENGINE_IN1, RIGHT_FRONT_ENGINE_IN2);
-  engineMovementClockwise(LEFT_REAR_ENGINE_IN3, LEFT_REAR_ENGINE_IN4);
-  braked(FRONT_LEFT_ENGINE_IN3, FRONT_LEFT_ENGINE_IN4);
-  braked(RIGHT_REAR_ENGINE_IN1, RIGHT_REAR_ENGINE_IN2);
-}'                                                                                                                                                                                                                                                                                                                                                llllllllllllj
+    engineMovementClockwise(RIGHT_FRONT_ENGINE_IN1, RIGHT_FRONT_ENGINE_IN2);
+    engineMovementClockwise(LEFT_REAR_ENGINE_IN3, LEFT_REAR_ENGINE_IN4);
+    braked(FRONT_LEFT_ENGINE_IN3, FRONT_LEFT_ENGINE_IN4);
+    braked(RIGHT_REAR_ENGINE_IN1, RIGHT_REAR_ENGINE_IN2);
+}
 
-
-void loop() {
+void loop()
+{
 
     auto timeDelay = 2000;
     String commandRead = "";
 
-    if (Serial.available()) {
-        while (Serial.available()) {
-            commandRead += (char) Serial.read();
+    if (Serial.available())
+    {
+        while (Serial.available())
+        {
+            commandRead += (char)Serial.read();
         }
     }
 
-    if (commandRead.equals(FORWARD)) {
+    switch (commandRead)
+    {
+    case FORWARD:
         moveTheRobotForward();
         runtime(timeDelay);
-    }
-    if (commandRead.equals(BACK)) {
+        break;
+    case BACK:
         moveTheRobotBack();
         runtime(timeDelay);
-    }
-    if (commandRead.equals(LEFT)) {
+        break;
+    case LEFT:
         rotateTheRobotLeft();
         runtime(timeDelay);
-    }
-    if (commandRead.equals(RIGHT)) {
+        break;
+    case RIGHT:
         rotateTheRobotRight();
         runtime(timeDelay);
-    }
-    if (commandRead.equals(STOP)) {
+        break;
+    case STOP:
         stopTheRobot();
+        break;
     }
 }
